@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>difi.pi - DeFi on Pi Network</title>
+  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px 20px;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      color: #ffffff;
+      margin: 0;
+    }
+    h1 {
+      color: #00ff9d;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 1.2em;
+      margin-bottom: 40px;
+      opacity: 0.9;
+    }
+    button {
+      padding: 16px 32px;
+      font-size: 18px;
+      margin: 12px;
+      background: #00ff9d;
+      color: #000000;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #00cc7a;
+    }
+    #status {
+      margin-top: 40px;
+      font-size: 17px;
+      min-height: 60px;
+      padding: 15px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🚀 difi.pi</h1>
+  <p>Your DeFi Gateway on the Pi Network</p>
+  
+  <button onclick="loginWithPi()">🔑 Login with Pi</button>
+  <button onclick="checkBalance()">💰 Check Balance</button>
+  <button onclick="sendPayment()">💸 Send Test Payment (0.01 Pi)</button>
+  
+  <div id="status"></div>
+
+  <script>
+    // Initialize Pi SDK - Replace with your actual App ID from Developer Portal
+    Pi.init({ version: "2.0", appId: "YOUR_APP_ID_HERE" });
+
+    async function loginWithPi() {
+      try {
+        const scopes = ['payments'];
+        const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
+        document.getElementById('status').innerHTML = `✅ Logged in successfully!<br>Welcome, ${auth.user.username}`;
+        console.log('Pi User:', auth.user);
+      } catch (err) {
+        document.getElementById('status').innerHTML = '❌ Login failed. Try again.';
+        console.error(err);
+      }
+    }
+
+    async function checkBalance() {
+      document.getElementById('status').innerHTML = '🔄 Checking balance... (Demo mode)<br>Full balance integration requires a backend.';
+      alert("This is a demo. In a real DeFi app we can show actual Pi balance or token holdings.");
+    }
+
+    async function sendPayment() {
+      try {
+        const paymentData = {
+          amount: 0.01,
+          memo: "Test payment from difi.pi",
+          metadata: { type: "demo", domain: "difi.pi" }
+        };
+        const payment = await Pi.createPayment(paymentData);
+        document.getElementById('status').innerHTML = `✅ Payment created!<br>Transaction ID: ${payment.identifier || 'Processing...'}`;
+      } catch (err) {
+        document.getElementById('status').innerHTML = '❌ Payment failed or cancelled.';
+        console.error(err);
+      }
+    }
+
+    function onIncompletePaymentFound(payment) {
+      console.log('Incomplete payment found:', payment);
+      // You can handle pending payments here later
+    }
+  </script>
+</body>
+</html>
